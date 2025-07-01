@@ -34,6 +34,7 @@ export interface PublicacaoFilters {
   data_inicio?: string;
   data_fim?: string;
   autor?: string;
+  search?: string;
   page?: string;
   limit?: string;
 }
