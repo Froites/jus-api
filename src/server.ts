@@ -51,11 +51,9 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-// Registrar routes
 app.use('/api/auth', authRoutes);
 app.use('/api/publicacoes', publicacoesRoutes);
 
-// Middleware de tratamento de erros
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({
@@ -76,7 +74,6 @@ app.use('*', (req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`🚀 JUS API rodando na porta ${PORT}`);
   console.log(`📍 Acesse: http://localhost:${PORT}`);
-  console.log(`🩺 Health: http://localhost:${PORT}/health`);
 });
 
 export default app;

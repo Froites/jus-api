@@ -108,7 +108,6 @@ router.get('/', authenticateToken, async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('❌ Erro ao buscar publicações:', error);
     res.status(500).json({ 
       error: 'Erro interno do servidor',
       details: process.env.NODE_ENV === 'development' ? error : undefined
@@ -149,7 +148,6 @@ router.post('/', async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('❌ Erro ao criar publicação:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -164,7 +162,6 @@ router.put('/:id/status', authenticateToken, async (req: Request, res: Response)
       return res.status(400).json({ error: 'Status inválido' });
     }
 
-    // Buscar status atual
     const currentResult = await pool.query('SELECT status FROM publicacoes WHERE id = $1', [id]);
     if (currentResult.rowCount === 0) {
       return res.status(404).json({ error: 'Publicação não encontrada' });
@@ -195,7 +192,6 @@ router.put('/:id/status', authenticateToken, async (req: Request, res: Response)
     });
 
   } catch (error) {
-    console.error('❌ Erro ao atualizar status:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -234,7 +230,6 @@ router.get('/stats', authenticateToken, async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('❌ Erro ao buscar estatísticas:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });

@@ -35,7 +35,7 @@ router.post('/register', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Email já cadastrado' });
     }
 
-    // Hash da senha
+    // Hash
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(senha, saltRounds);
 
@@ -57,7 +57,6 @@ router.post('/register', async (req: Request, res: Response) => {
     res.status(201).json(response);
 
   } catch (error) {
-    console.error('❌ Erro no registro:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
@@ -106,7 +105,6 @@ router.post('/login', async (req: Request, res: Response) => {
     res.json(response);
 
   } catch (error) {
-    console.error('❌ Erro no login:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
