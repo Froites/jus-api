@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Serviço do PostgreSQL (já existente)
   postgres:
     image: postgres:15-alpine
     container_name: jus-postgres
@@ -20,6 +21,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  api:
+    build: .
+    container_name: jus-api-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000" # Mapeia a porta 3000
+    environment:
+      # Variáveis de ambiente para a API que se conectam ao banco de dados Docker
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: jus_scraper
+      DB_USER: jus_user
+      DB_PASSWORD: jus_password
+      JWT_SECRET: jwt_secret_juscash_api_02
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
 
 volumes:
   postgres_data:
