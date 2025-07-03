@@ -1,32 +1,35 @@
-  FROM node:20-alpine AS build
+# Usa uma imagem Node.js completa para a etapa de compilação
+FROM node:20-alpine AS build
 
-  WORKDIR /app
+WORKDIR /app
 
-  COPY package.json package-lock.json ./
-  
-  RUN npm install --omit=dev
+# Copia package.json e package-lock.json
+COPY package.json package-lock.json ./
 
-  COPY . .
+RUN npm install
 
-  RUN npm run build
-  
-  # --- Etapa de Produção/Execução ---
-  FROM node:20-alpine AS production
-  
-  WORKDIR /app
-  
-  
-  # Copia os arquivos de build e as dependências (node_modules) da etapa de build
-  COPY --from=build /app/dist ./dist
-  COPY --from=build /app/node_modules ./node_modules
-  COPY --from=build /app/package.json ./package.json
-  
+# Copia o restante do código-fonte do projeto
+COPY . .
 
-  EXPOSE 3000
-  
-  # Define variáveis de ambiente para produção
-  ENV NODE_ENV=production
-  
-  # Comando para iniciar a aplicação
-  # Usa o script "start" definido no seu package.json
-  CMD ["npm", "start"]
+# Compila o TypeScript para JavaScript
+RUN npm run build
+
+# --- Etapa de Produção/Execução ---
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+# Copia apenas os arquivos JavaScript compilados da etapa de build
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json ./package.json
+
+RUN npm install --omit=dev
+
+# Expor a porta que a aplicação Express escuta
+EXPOSE 3000
+
+# Define variáveis de ambiente para produção
+ENV NODE_ENV=production
+
+# Comando para iniciar a aplicação
+CMD ["npm", "start"]
